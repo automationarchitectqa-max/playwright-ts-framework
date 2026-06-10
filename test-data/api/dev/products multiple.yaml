@@ -1,0 +1,39 @@
+createProduct:
+
+  - name: Create MacBook Product
+    request:
+      name: "Apple MacBook Pro 16"
+      data:
+        year: 2019
+        price: 1849.99
+        CPU model: "Intel Core i9"
+        Hard disk size: "1 TB"
+
+    expected:
+      statusCode: 200
+      body:
+        name: "Apple MacBook Pro 16"
+        data:
+          year: 2019
+          price: 1849.99
+          CPU model: "Intel Core i9"
+          Hard disk size: "1 TB"
+
+  - name: Create Dell Product
+    request:
+      name: "Dell XPS 15"
+      data:
+        year: 2024
+        price: 2499.99
+        CPU model: "Intel Ultra 9"
+        Hard disk size: "2 TB"
+
+    expected:
+      statusCode: 200
+      body:
+        name: "Dell XPS 15"
+        data:
+          year: 2024
+          price: 2499.99
+          CPU model: "Intel Ultra 9"
+          Hard disk size: "2 TB"

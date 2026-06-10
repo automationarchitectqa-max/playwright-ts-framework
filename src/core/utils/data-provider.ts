@@ -101,4 +101,122 @@ export class DataProvider {
 
     return testData;
   }
+
+  /**
+ * Load multiple test scenarios from YAML.
+ *
+ * Purpose:
+ *   Provides Playwright data-driven testing
+ *   similar to TestNG DataProvider.
+ *
+ * YAML Example:
+ *
+ * createProduct:
+ *
+ *   - name: Create MacBook Product
+ *     request:
+ *       ...
+ *     expected:
+ *       ...
+ *
+ *   - name: Create Dell Product
+ *     request:
+ *       ...
+ *     expected:
+ *       ...
+ *
+ * Usage:
+ *
+ * const scenarios =
+ *   DataProvider.getScenarios<any>(
+ *     'products.yaml',
+ *     'createProduct'
+ *   );
+ *
+ * scenarios.forEach(
+ *   (scenario) => {
+ *
+ *     test(
+ *       scenario.name,
+ *       async () => {
+ *         ...
+ *       }
+ *     );
+ *
+ *   }
+ * );
+ *
+ * @param fileName
+ *        YAML file name.
+ *
+ * @param key
+ *        Root key inside YAML.
+ *
+ * @param area
+ *        Test data area.
+ *        Supported values:
+ *        - api
+ *        - ui
+ *
+ * @returns
+ *        Array of test scenarios.
+ */
+  static getScenarios<T>(
+    fileName: string,
+    key: string,
+    area: 'api' | 'ui' = 'api'
+  ): T[] {
+
+    const env =
+      process.env.ENV || 'dev';
+
+    const filePath =
+      path.join(
+        process.cwd(),
+        'test-data',
+        area,
+        env,
+        fileName
+      );
+
+    if (!fs.existsSync(filePath)) {
+
+      throw new Error(
+        `Test data file not found: ${filePath}`
+      );
+
+    }
+
+    const yamlContent =
+      fs.readFileSync(
+        filePath,
+        'utf8'
+      );
+
+    const yamlData =
+      yaml.load(
+        yamlContent
+      ) as Record<string, unknown>;
+
+    const scenarios =
+      yamlData[key];
+
+    if (!scenarios) {
+
+      throw new Error(
+        `Key '${key}' not found in ${fileName}`
+      );
+
+    }
+
+    if (!Array.isArray(scenarios)) {
+
+      throw new Error(
+        `Key '${key}' in ${fileName} must contain a YAML array`
+      );
+
+    }
+
+    return scenarios as T[];
+  }
 }

@@ -1,5 +1,5 @@
 import { test } from '../../src/core/fixtures';
-import { ApiAssertions } from '../../src/api/assertions/api-assertions';
+import { ApiAssertions } from '../../src/api/utils/api-assertions';
 import { DataProvider } from '../../src/core/utils/data-provider';
 import { ReportHelper } from '../../src/core/utils/report-helper';
 import { TestHelper } from '../../src/helpers/test-helper';

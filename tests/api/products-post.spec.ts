@@ -20,7 +20,6 @@ test.describe('@api Products API', () => {
 
     const request =
       data.request as ProductRequest;
-    
     console.log('Request:', request);
 
     const response =
@@ -40,31 +39,31 @@ test.describe('@api Products API', () => {
 
     await ApiAssertions.assertValue(
       response.body.name,
-      data.expected.name,
+      data.expected.body.name,
       'Validate product name'
     );
 
     await ApiAssertions.assertValue(
       response.body.data.year,
-      data.expected.year,
+      data.expected.body.data.year,
       'Validate product year'
     );
 
     await ApiAssertions.assertValue(
       response.body.data.price,
-      data.expected.price,
+      data.expected.body.data.price,
       'Validate product price'
     );
 
     await ApiAssertions.assertValue(
       response.body.data['CPU model'],
-      data.expected.cpuModel,
+      data.expected.body.data['CPU model'],
       'Validate CPU model'
     );
 
     await ApiAssertions.assertValue(
       response.body.data['Hard disk size'],
-      data.expected.hardDiskSize,
+      data.expected.body.data['Hard disk size'],
       'Validate hard disk size'
     );
 

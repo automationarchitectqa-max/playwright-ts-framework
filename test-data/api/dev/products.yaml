@@ -10,7 +10,6 @@ createProduct:
 
   expected:
     statusCode: 200
-
     body:
       name: "Apple MacBook Pro 16"
       data:
