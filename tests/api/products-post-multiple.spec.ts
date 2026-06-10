@@ -12,7 +12,7 @@ const scenarios =
   );
 
 
-test.describe('@api Products API', () => {
+test.describe('@api multiple scenarios Products API', () => {
 
   scenarios.forEach(
     (scenario) => {

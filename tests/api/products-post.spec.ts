@@ -7,9 +7,7 @@ import { ProductResponse } from '../../src/api/pojos/product-response.model';
 
 test.describe('@api Products API', () => {
 
-  test('POST /objects should create product', async ({
-    apiClient,
-  }, testInfo) => {
+  test('POST /objects should create product', async ({apiClient}, testInfo) => {
 
     const data =
       DataProvider.get<any>(

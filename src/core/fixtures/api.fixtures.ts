@@ -39,12 +39,11 @@ export const apiTest = base.extend<ApiFixtures>({
 
   apiClient: async ({ request }, use) => {
     console.log(`[ApiFixture] API_BASE_URL from env: ${BASE_URL}`);
-    
+
     const apiClient = new ApiClient(
       request,
       BASE_URL
     );
-
     await use(apiClient);
   },
 
