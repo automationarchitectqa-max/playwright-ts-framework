@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "goalId",
+    "title",
+    "status"
+  ],
+  "properties": {
+    "goalId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    }
+  }
+}

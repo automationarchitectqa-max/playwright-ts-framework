@@ -42,5 +42,14 @@ export const ApiEndpoints = {
       '/products',
 
   },
+  goals: {
+
+    products:
+      '/products',
+
+    create:
+      '/goals',
+
+  },
 
 } as const;
