@@ -1,0 +1,20 @@
+# Example: Test configuration
+testConfig:
+  name: "Login Test"        # key-value
+  enabled: true             # key-value
+  tags:                     # list
+    - smoke
+    - regression
+    - auth
+  steps:                    # list of maps
+    - step: "Open browser"
+      action: "navigate"
+      url: "https://example.com"
+    - step: "Enter credentials"
+      action: "input"
+      fields:               # nested map
+        username: "testUser"
+        password: "secret"
+    - step: "Click login"
+      action: "click"
+      target: "loginButton"

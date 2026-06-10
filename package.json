@@ -1,0 +1,50 @@
+{
+  "name": "playwright-ts-framework",
+  "version": "1.0.0",
+  "description": "Enterprise-grade Playwright + TypeScript test automation framework with layered architecture (API + UI + Mock)",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test --project=api",
+    "test:ui": "playwright test --project=ui",
+    "test:e2e": "playwright test --project=e2e",
+    "test:tag": "node scripts/playwright-env.js --tag",
+    "test:ci": "node scripts/playwright-env.js --ci",
+    "report:html": "playwright show-report reports/html",
+    "report:allure": "allure serve reports/allure-results",
+    "report:allure:generate": "allure generate reports/allure-results -o reports/allure-report --clean",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf reports test-results",
+    "pretest": "npm run typecheck"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.12.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "allure-commandline": "^2.42.1",
+    "allure-playwright": "^3.0.0",
+    "eslint": "^8.57.0",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "allure-js-commons": "^3.9.0",
+    "csv-parse": "^5.5.5",
+    "dotenv": "^16.4.5",
+    "js-yaml": "^4.2.0"
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

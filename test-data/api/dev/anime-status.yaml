@@ -1,0 +1,5 @@
+getAnimeStatus:
+  expected:
+    code: 200
+    status: true
+    resultContains: ".mp4"
