@@ -45,7 +45,10 @@ playwright-ts-framework/
 │   ├── api/                               # API Testing Layer
 │   │   ├── client/
 │   │   │   └── api-client.ts             # HTTP client
+│   │   ├── constants/
+│   │   │   └── api-endpoints.ts          # Centralized API endpoints
 │   │   ├── services/                      # API service layer (auth, user, etc.)
+│   │   │   └── auth.service.ts           # Authentication service with token caching
 │   │   ├── pojos/                         # Data models (POJOs)
 │   │   │   ├── anime-status.model.ts
 │   │   │   ├── product.model.ts
@@ -95,7 +98,8 @@ playwright-ts-framework/
 ├── tests/                                 # Test specifications
 │   ├── api/                               # API test specs
 │   │   ├── anime-status.spec.ts
-│   │   └── products.spec.ts
+│   │   ├── products.spec.ts
+│   │   └── products-post-multiple.spec.ts # Data-driven scenario tests
 │   ├── ui/                                # UI test specs
 │   │   ├── login.spec.ts
 │   │   └── products.spec.ts
@@ -274,6 +278,22 @@ playwright-ts-framework/
   - `put(endpoint, body)` - Make PUT request
   - `delete(endpoint)` - Make DELETE request
 
+#### `constants/api-endpoints.ts`
+- **Purpose**: Centralized API endpoint constants
+- **Benefits**:
+  - Avoid hardcoded URLs in tests and services
+  - Single source of truth for API endpoints
+  - Easy maintenance and refactoring
+  - Type-safe endpoint references
+- **Example**:
+  ```typescript
+  export const ApiEndpoints = {
+    auth: { login: '/auth/login', logout: '/auth/logout' },
+    users: { profile: '/users/me', users: '/users' },
+    products: { products: '/products', create: '/products' }
+  }
+  ```
+
 #### `pojos/` - Data Models
 - `anime-status.model.ts` - Anime API response model
 - `product.model.ts` - Product model
@@ -282,8 +302,32 @@ playwright-ts-framework/
 - **Purpose**: Type-safe serialization/deserialization of API responses
 
 #### `services/` - API Service Layer
-- Business-level API operations (Auth, User, Product, etc.)
-- Encapsulates API client and builds domain-specific methods
+- **Purpose**: Business-level API operations (Auth, User, Product, etc.)
+- **Encapsulates** API client and builds domain-specific methods
+
+**`auth.service.ts`** - Authentication Service
+- **Purpose**: Centralize authentication logic with automatic token management
+- **Features**:
+  - Bearer token caching and refresh
+  - OAuth token support
+  - Automatic token expiry detection
+  - Login/logout methods
+  - Token validation
+- **Methods**:
+  - `loginWithBearer(endpoint, username, password)` - Authenticate with credentials
+  - `loginWithOAuth(endpoint, clientId, clientSecret)` - OAuth authentication
+  - `logout()` - Invalidate cached tokens
+  - `getBearer()` - Get cached Bearer token
+  - `getOAuth()` - Get cached OAuth token
+- **Example**:
+  ```typescript
+  const authService = new AuthService(apiClient);
+  await authService.loginWithBearer(
+    '/auth/login',
+    process.env.API_USERNAME!,
+    process.env.API_PASSWORD!
+  );
+  ```
 
 #### `assertions/api-assertions.ts`
 - **Assertion Helpers**:
@@ -385,6 +429,52 @@ playwright-ts-framework/
 - Load test data from YAML files
 - Example: `DataProvider.loadYAML('test-data/api/dev/anime-status.yaml')`
 
+**Data-Driven Testing with Scenarios**
+- **Purpose**: Run the same test multiple times with different test data (like TestNG DataProvider)
+- **Method**: `DataProvider.getScenarios<T>(fileName, key)`
+- **Returns**: Array of scenario objects with `name`, `request`, and `expected` properties
+- **Example Usage**:
+  ```typescript
+  const scenarios = DataProvider.getScenarios<any>(
+    'products multiple.yaml',
+    'createProduct'
+  );
+
+  scenarios.forEach((scenario) => {
+    test(scenario.name, async ({ apiClient }) => {
+      const response = await apiClient.post(
+        '/objects',
+        scenario.request
+      );
+      
+      // Validate using scenario.expected
+      expect(response.status).toBe(scenario.expected.statusCode);
+    });
+  });
+  ```
+- **Example YAML Structure**:
+  ```yaml
+  createProduct:
+    - name: Create MacBook Product
+      request:
+        title: "MacBook"
+        price: 2499
+      expected:
+        statusCode: 201
+        body:
+          name: "MacBook"
+    
+    - name: Create Dell Product
+      request:
+        title: "Dell XPS"
+        price: 1299
+      expected:
+        statusCode: 201
+        body:
+          name: "Dell XPS"
+  ```
+- **Benefit**: Reduce code duplication, test multiple scenarios with single test case
+
 **`logger.ts`**
 - Custom logging utility
 - Methods: `info()`, `warn()`, `error()`, `debug()`
@@ -458,6 +548,15 @@ npx playwright test tests/api/anime-status.spec.ts
 npx playwright test tests/ui/login.spec.ts --headed
 ```
 
+### Run data-driven scenario tests
+```bash
+# Run all scenario tests (multiple iterations with different data)
+npx playwright test products-post-multiple.spec.ts
+
+# Run specific scenario
+npx playwright test products-post-multiple.spec.ts -g "Create MacBook Product"
+```
+
 ### With custom workers
 ```bash
 WORKERS=8 npm test
@@ -481,14 +580,17 @@ npm run report:allure      # Generate & serve Allure report
 
 1. **Use Page Objects** - Encapsulate UI selectors and interactions in page objects
 2. **Data-Driven Tests** - Use YAML files for test data, not hardcoded values
-3. **Reusable Fixtures** - Use fixtures for common setup/teardown
-4. **Type Safety** - Always use TypeScript models (POJOs) for API responses
-5. **Meaningful Assertions** - Use descriptive assertion messages
-6. **Screenshots on Failure** - Automatic screenshot capture on UI test failure
-7. **Separate Test Types** - Keep API, UI, and E2E tests in separate directories
-8. **Logging** - Use logger utility for debugging information
-9. **Error Handling** - Always handle errors gracefully with meaningful messages
-10. **Reporting** - Add steps and attachments to Allure reports
+3. **Scenario-Based Testing** - Use `DataProvider.getScenarios()` to test multiple variations in a single test case (reduces code duplication)
+4. **Reusable Fixtures** - Use fixtures for common setup/teardown
+5. **Type Safety** - Always use TypeScript models (POJOs) for API responses
+6. **Meaningful Assertions** - Use descriptive assertion messages
+7. **Screenshots on Failure** - Automatic screenshot capture on UI test failure
+8. **Separate Test Types** - Keep API, UI, and E2E tests in separate directories
+9. **Centralized Constants** - Use `ApiEndpoints` constants instead of hardcoded URLs
+10. **Authentication Service** - Leverage `AuthService` for token caching and management
+11. **Logging** - Use logger utility for debugging information
+12. **Error Handling** - Always handle errors gracefully with meaningful messages
+13. **Reporting** - Add steps and attachments to Allure reports
 
 ---
 
