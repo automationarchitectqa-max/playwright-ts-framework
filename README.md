@@ -79,10 +79,12 @@ playwright-ts-framework/
 │   │   │   ├── ui.fixtures.ts            # UI fixtures (beforeEach/afterEach)
 │   │   │   └── index.ts
 │   │   └── utils/                        # Shared utilities
-│   │       ├── data-provider.ts          # Load YAML test data
-│   │       ├── logger.ts                 # Custom logging
-│   │       ├── report-helper.ts          # Allure report helpers
-│   │       └── string-utils.ts           # String utilities
+│   │   │    ├── data-provider.ts         # Load YAML test data
+│   │   │    ├── logger.ts                # Custom logging
+│   │   │    ├── report-helper.ts         # Allure report helpers
+│   │   │    └── string-utils.ts          # String utilities
+│   │   └── scripts/
+│   │        └── playwright-env.js        # Environment setup
 │   │
 │   ├── helpers/
 │   │   └── test-helper.ts                # Common test utilities
@@ -91,29 +93,27 @@ playwright-ts-framework/
 │       └── mock-server.ts                # Mock API server
 │
 ├── tests/                                 # Test specifications
-│   ├── api/                              # API test specs
+│   ├── api/                               # API test specs
 │   │   ├── anime-status.spec.ts
 │   │   └── products.spec.ts
-│   ├── ui/                               # UI test specs
+│   ├── ui/                                # UI test specs
 │   │   ├── login.spec.ts
 │   │   └── products.spec.ts
-│   └── e2e/                              # End-to-end test specs
+│   └── e2e/                               # End-to-end test specs
 │       └── shopping-flow.spec.ts
 │
 ├── test-data/                             # Test data files
 │   ├── api/
-│   │   └── dev/                          # Dev environment test data
+│   │   └── dev/                           # Dev environment test data
 │   │       ├── anime-status.yaml
 │   │       ├── products.yaml
 │   │       └── sample-data.yaml
-│   └── ui/                               # UI test data
+│   └── ui/                                # UI test data
 │
-├── scripts/
-│   └── playwright-env.js                 # Environment setup
 │
 ├── playwright.config.ts                   # Playwright configuration
 ├── tsconfig.json                          # TypeScript configuration
-├── .eslintrc.json                        # ESLint configuration
+├── .eslintrc.json                         # ESLint configuration
 ├── package.json                           # Dependencies & scripts
 ├── Jenkinsfile                            # Jenkins CI/CD pipeline
 └── README.md                              # This file
